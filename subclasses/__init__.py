@@ -114,4 +114,5 @@ class PetRap():
         
         if "Sh" in data["ConfigData"]:
             if data["ConfigData"]["Sh"] == True:
-                self.IsShiny: bool = True
+                self.IsShiny: bool = True                
+                
