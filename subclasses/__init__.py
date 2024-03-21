@@ -97,6 +97,16 @@ class PetExist():
         if "Sh" in data["ConfigData"]:
             if data["ConfigData"]["Sh"] == True:
                 self.IsShiny: bool = True
+                
+    def __str__(self) -> str:
+        return f"""{{
+            "Category": {self.Category}, 
+            "Id": {self.Id}, 
+            "Variation": {self.Variation}, 
+            "IsShiny": {self.IsShiny}, 
+            "ExistCount": {self.ExistCount},
+        }}"""
+    
 
 class PetRap():
     def __init__(self, data: dict) -> None:
@@ -114,5 +124,60 @@ class PetRap():
         
         if "Sh" in data["ConfigData"]:
             if data["ConfigData"]["Sh"] == True:
-                self.IsShiny: bool = True                
-                
+                self.IsShiny: bool = True     
+    
+    def __str__(self) -> str:
+        return self.Id           
+
+class BronzeReward():
+    def __init__(self, data: dict) -> None:
+        self.Booth: str = data["Booth"]
+        
+    def __str__(self) -> str:
+        return f"""{{
+            "Booth": {self.Booth}
+        }}"""
+
+class SilverReward():
+    def __init__(self, data: dict) -> None:
+        self.Hoverboard: str = data["Hoverboard"]
+        self.Booth: str = data["Booth"]
+        self.EggCount: int = data["EggCount"]
+        self.Egg: str = data["Egg"]
+        
+
+    def __str__(self) -> str:
+        return f"""{{
+            "Booth": {self.Booth}
+            "Hoverboard": {self.Hoverboard}, 
+            "EggCount": {self.EggCount}, 
+            "Egg": {self.Egg},
+        }}"""
+    
+class GoldReward():
+    def __init__(self, data: dict) -> None:
+        self.Huge: str = data["Huge"]
+        self.Hoverboard: str = data["Hoverboard"]
+        self.Booth: str = data["Booth"]
+        self.EggCount: int = data["EggCount"]
+        self.Egg: str = data["Egg"]
+        
+
+    def __str__(self) -> str:
+        return f"""{{
+            "Huge": {self.Huge}, 
+            "Booth": {self.Booth},
+            "Hoverboard": {self.Hoverboard}, 
+            "EggCount": {self.EggCount}, 
+            "Egg": {self.Egg},
+        }}"""
+    
+class Rewards():
+    def __init__(self, data: dict) -> None:
+        self.Bronze: BronzeReward = BronzeReward(data=data["Bronze"])
+        self.Silver: SilverReward = SilverReward(data=data["Silver"])
+        self.Gold: GoldReward = GoldReward(data=data["Gold"])
+
+    
+    def __str__(self) -> str:
+        return self.Id

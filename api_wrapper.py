@@ -3,9 +3,9 @@ import json
 import pandas
 from pandas import DataFrame
 from requests import Request
-from typing import List
+from typing import List, Dict
 from api import APIRequest, APIResponse
-from subclasses import Sort, SortObject, Member, Battle, PetExist, PetType, PetRap
+from subclasses import Sort, SortObject, Member, Battle, PetExist, PetType, PetRap, Rewards
 
 BASE_URL: str = "https://biggamesapi.io/api"
 
@@ -58,14 +58,20 @@ class Collections(APIRequest):
         """
         super().__init__()
         
-    def get_data(self) -> list:
+    def get_data(self) -> list | None:
         """Retrieves the collections data.
 
         Returns:
             list: The raw list of all collections.
         """
-        api_response: APIResponse = self.http_get(self.api_url)
-        return api_response.get_data()
+        
+        if self.get_status() == "ok":
+            api_response: APIResponse = self.http_get(self.api_url)
+        else:
+            print("[API] Network Status: "+self.get_status())
+            return None
+                
+        return api_response.get_data() 
     
     def get_status(self) -> str:
         """Retrieves the status of the collections api.
@@ -93,15 +99,20 @@ class Collection(APIRequest):
         
         self.Name: str = collection_name
         
-    def get_data(self) -> list:
+    def get_data(self) -> list | None:
         """Retrieves the list from the collection.
 
         Returns:
             list: The raw list of data in a collection.
         """
         
-        api_response: APIResponse = self.http_get(self.api_url)
-        return api_response.get_data()
+        if self.get_status() == "ok":
+            api_response: APIResponse = self.http_get(self.api_url)
+        else:
+            print("[API] Network Status: "+self.get_status())
+            return None
+                
+        return api_response.get_data() 
     
     def get_info_by_name(self, search_by: str) -> list | dict:
         """Queries the collection by name and returns matching results.
@@ -181,15 +192,20 @@ class Clans(APIRequest):
             
         return response_data
             
-    def get_data(self) -> list:
+    def get_data(self) -> list | None:
         """Retrieves the clan list.
 
         Returns:
             list: The raw list of all clans sorted by what is specified.
         """
         
-        api_response: APIResponse = self.http_get(self.api_url, parameters=self.parameters)
-        return api_response.get_data()
+        if self.get_status() == "ok":
+            api_response: APIResponse = self.http_get(self.api_url)
+        else:
+            print("[API] Network Status: "+self.get_status())
+            return None
+                
+        return api_response.get_data() 
              
     def get_status(self) -> str:
         """Retrieves the status of the clans api.
@@ -216,22 +232,22 @@ class Clan(APIRequest):
         api_response: dict = self.get_data()
         
         # Attributes
-        self.Created: int = api_response["Created"]
-        self.Owner: int = api_response["Owner"]
-        self.Name: str = api_response["Name"]
-        self.Icon: str  = api_response["Icon"]
-        self.Desc: str = api_response["Desc"]
-        self.CountryCode: str = api_response["CountryCode"]
-        self.MemberCapacity: int = api_response["MemberCapacity"]
-        self.OfficerCapacity: int = api_response["OfficerCapacity"]
-        self.GuildLevel:int  = api_response["GuildLevel"]
-        self.LastKickTimestamp: int = api_response["LastKickTimestamp"] 
+        self.Created: int = api_response.get("Created")
+        self.Owner: int = api_response.get("Owner")
+        self.Name: str = api_response.get("Name")
+        self.Icon: str  = api_response.get("Icon")
+        self.Desc: str = api_response.get("Desc")
+        self.CountryCode: str = api_response.get("CountryCode")
+        self.MemberCapacity: int = api_response.get("MemberCapacity")
+        self.OfficerCapacity: int = api_response.get("OfficerCapacity")
+        self.GuildLevel:int  = api_response.get("GuildLevel")
+        self.LastKickTimestamp: int = api_response.get("LastKickTimestamp")
         self.Members: List[Member] = []
         self.MemberCount: int = 0
-        self.DepositedDiamonds: int = api_response["DepositedDiamonds"]
-        self.Status: str = api_response["Status"] if "Status" in api_response else None
-        self.StatusTimestamp: int = api_response["StatusTimestamp"] if "StatusTimestamp" in api_response else None
-        self.StatusUsername: str = api_response["StatusUsername"] if "StatusUsername" in api_response else None
+        self.DepositedDiamonds: int = api_response.get("DepositedDiamonds")
+        self.Status: str = api_response.get("Status")
+        self.StatusTimestamp: int = api_response.get("StatusTimestamp")
+        self.StatusUsername: str = api_response.get("StatusUsername")
         self.Battles: List[Battle] = []
         self.Points: int = 0
         
@@ -278,14 +294,19 @@ class Clan(APIRequest):
         self.MemberCount: int = len(self.Members)
         self.Points: int = most_recent_clan_battle["Points"]
         
-    def get_data(self) -> list:
+    def get_data(self) -> list | None:
         """Retrieves the clan data.
 
         Returns:
             list: The raw list of data in a clan.
         """
         
-        api_response: APIResponse = self.http_get(self.api_url)
+        if self.get_status() == "ok":
+            api_response: APIResponse = self.http_get(self.api_url)
+        else:
+            print("[API] Network Status: "+self.get_status())
+            return None
+                
         return api_response.get_data() 
              
     def get_status(self) -> str:
@@ -298,7 +319,7 @@ class Clan(APIRequest):
         return api_response.get_status()
     
     def __str__(self) -> str:
-        return self.Name
+        return self.Name    
 
 class Exists(APIRequest):
     """
@@ -310,15 +331,20 @@ class Exists(APIRequest):
     def __init__(self) -> None:
         super().__init__()
         
-    def get_data(self) -> list:
+    def get_data(self) -> list | None:
         """Retrieves the exist count of all of the pets in a list.
 
         Returns:
             list: The raw list of data in the exist count list.
         """
         
-        api_response: APIResponse = self.http_get(self.api_url)
-        return api_response.get_data()
+        if self.get_status() == "ok":
+            api_response: APIResponse = self.http_get(self.api_url)
+        else:
+            print("[API] Network Status: "+self.get_status())
+            return None
+                
+        return api_response.get_data() 
     
     def search_for_pet(self, search_by: str, variation: str = "normal", shiny: bool = False) -> PetExist | List[PetExist]:
         """Queries the exists by name and returns matching results.
@@ -432,15 +458,20 @@ class Rap(APIRequest):
     def __init__(self) -> None:
         super().__init__()
         
-    def get_data(self) -> list:
+    def get_data(self) -> list | None:
         """Retrieves the rap count of all of the pets in a big list.
 
         Returns:
             list: The raw list of data in the raps count list.
         """
         
-        api_response: APIResponse = self.http_get(self.api_url)
-        return api_response.get_data()
+        if self.get_status() == "ok":
+            api_response: APIResponse = self.http_get(self.api_url)
+        else:
+            print("[API] Network Status: "+self.get_status())
+            return None
+                
+        return api_response.get_data() 
     
     def search_for_pet(self, search_by: str, variation: str = "normal", shiny: bool = False) -> PetRap | List[PetRap]:
         """Queries the exists by name and returns matching results.
@@ -543,5 +574,81 @@ class Rap(APIRequest):
         """
         api_response: APIResponse = self.http_get(self.api_url)
         return api_response.get_status()
+
+class ActiveClanBattle(APIRequest):
+    """
+    The latest clan battle, whether active or not.
+    """
+    
+    api_url: str = BASE_URL+"/activeClanBattle"
+
+    def __init__(self) -> None:
+        super().__init__()
+        
+        api_response: dict = self.get_data()
+        
+        self.Id: str = api_response.get("_id")
+        self.Name: str = api_response.get("configName")
+        self.Category: str = api_response.get("category")
+        self.StartTime: int = api_response["configData"]["StartTime"]
+        self.FinishTime: int = api_response["configData"]["FinishTime"]
+        self.Title: str = api_response["configData"]["Title"]
+        self.Rewards: Rewards = None
+        
+        reward_info: dict = {
+            "Bronze": {}, 
+            "Silver": {}, 
+            "Gold": {}
+        }
+        
+        for reward in api_response["configData"]["Rewards"].keys():
+            if reward == "Bronze":
+                reward_info["Bronze"]["Booth"] = api_response["configData"]["Rewards"][reward][0]["_data"]["id"] + " Booth"
+                
+                reward_info["Silver"]["Booth"] = api_response["configData"]["Rewards"][reward][0]["_data"]["id"] + " Booth"
+                
+                reward_info["Gold"]["Booth"] = api_response["configData"]["Rewards"][reward][0]["_data"]["id"] + " Booth"
+                
+            elif reward == "Silver":
+                reward_info["Silver"]["Hoverboard"] = api_response["configData"]["Rewards"][reward][0]["_data"]["id"] + " Hoverboard"
+                reward_info["Silver"]["Egg"] = api_response["configData"]["Rewards"][reward][1]["_data"]["id"]
+                reward_info["Silver"]["EggCount"] = len(api_response["configData"]["Rewards"][reward])-1
+                
+                reward_info["Gold"]["Hoverboard"] = api_response["configData"]["Rewards"][reward][0]["_data"]["id"] + " Hoverboard"
+                
+            elif reward == "Gold":
+                reward_info["Gold"]["Huge"] = api_response["configData"]["Rewards"][reward][0]["_data"]["id"]
+                reward_info["Gold"]["Egg"] = api_response["configData"]["Rewards"][reward][1]["_data"]["id"]
+                reward_info["Gold"]["EggCount"] = (len(api_response["configData"]["Rewards"][reward])-1) + reward_info["Silver"]["EggCount"]
+    
+        self.Rewards: Rewards = Rewards(data=reward_info)
+        
+    def get_data(self) -> list | None:
+        """Retrieves the raw data from the api.
+
+        Returns:
+            list: The raw list of data in the active clan battle.
+        """
+        
+        if self.get_status() == "ok":
+            api_response: APIResponse = self.http_get(self.api_url)
+        else:
+            print("[API] Network Status: "+self.get_status())
+            return None
+                
+        return api_response.get_data() 
+             
+    def get_status(self) -> str:
+        """Retrieves the status of the collection api.
+
+        Returns:
+            str: Current status.
+        """
+        api_response: APIResponse = self.http_get(self.api_url)
+        return api_response.get_status()
+    
+    def __str__(self) -> str:
+        return self.Name
     
 # End Wrappers
+
