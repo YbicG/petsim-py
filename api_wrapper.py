@@ -1,5 +1,7 @@
 import requests
 import json
+import pandas
+from pandas import DataFrame
 from requests import Request
 from typing import List
 from api import APIRequest, APIResponse
@@ -89,7 +91,7 @@ class Collection(APIRequest):
         super().__init__()
         self.api_url += collection_name
         
-        self.Name = collection_name
+        self.Name: str = collection_name
         
     def get_data(self) -> list:
         """Retrieves the list from the collection.
@@ -211,36 +213,36 @@ class Clan(APIRequest):
         super().__init__()
         self.api_url += clan_name
     
-        data: dict = self.get_data()
+        api_response: dict = self.get_data()
         
         # Attributes
-        self.Created: int = data["Created"]
-        self.Owner: int = data["Owner"]
-        self.Name: str = data["Name"]
-        self.Icon: str  = data["Icon"]
-        self.Desc: str = data["Desc"]
-        self.CountryCode: str = data["CountryCode"]
-        self.MemberCapacity: int = data["MemberCapacity"]
-        self.OfficerCapacity: int = data["OfficerCapacity"]
-        self.GuildLevel:int  = data["GuildLevel"]
-        self.LastKickTimestamp: int = data["LastKickTimestamp"] 
+        self.Created: int = api_response["Created"]
+        self.Owner: int = api_response["Owner"]
+        self.Name: str = api_response["Name"]
+        self.Icon: str  = api_response["Icon"]
+        self.Desc: str = api_response["Desc"]
+        self.CountryCode: str = api_response["CountryCode"]
+        self.MemberCapacity: int = api_response["MemberCapacity"]
+        self.OfficerCapacity: int = api_response["OfficerCapacity"]
+        self.GuildLevel:int  = api_response["GuildLevel"]
+        self.LastKickTimestamp: int = api_response["LastKickTimestamp"] 
         self.Members: List[Member] = []
         self.MemberCount: int = 0
-        self.DepositedDiamonds: int = data["DepositedDiamonds"]
-        self.Status: str = data["Status"] if "Status" in data else None
-        self.StatusTimestamp: int = data["StatusTimestamp"] if "StatusTimestamp" in data else None
-        self.StatusUsername: str = data["StatusUsername"] if "StatusUsername" in data else None
+        self.DepositedDiamonds: int = api_response["DepositedDiamonds"]
+        self.Status: str = api_response["Status"] if "Status" in api_response else None
+        self.StatusTimestamp: int = api_response["StatusTimestamp"] if "StatusTimestamp" in api_response else None
+        self.StatusUsername: str = api_response["StatusUsername"] if "StatusUsername" in api_response else None
         self.Battles: List[Battle] = []
         self.Points: int = 0
         
         
-        most_recent_clan_battle: dict = data["Battles"][list(data["Battles"].keys())[-1]]
+        most_recent_clan_battle: dict = api_response["Battles"][list(api_response["Battles"].keys())[-1]]
         
-        for member in data["Members"]:
+        for member in api_response["Members"]:
             donated: int = 0
             points: int = 0
             
-            for contribution in data["DiamondContributions"]["AllTime"]["Data"]:
+            for contribution in api_response["DiamondContributions"]["AllTime"]["Data"]:
                 if contribution["UserID"] == member["UserID"]:
                     donated: int = contribution["Diamonds"]
             
@@ -258,8 +260,8 @@ class Clan(APIRequest):
             
             self.Members.append(Member(data=member_data))
            
-        for battle_key in data["Battles"].keys():
-            battle: dict = data["Battles"][battle_key]
+        for battle_key in api_response["Battles"].keys():
+            battle: dict = api_response["Battles"][battle_key]
             
             battle_data: dict = {
                 "Name": battle_key,
@@ -330,11 +332,11 @@ class Exists(APIRequest):
             list | dict: This returns either a dictionary with 1 search result, or a list with dictionaries of all of the matching search results.
         """
         
-        api_response: APIResponse = self.http_get(self.api_url)
+        api_response: APIResponse = self.get_data()
         
         response_list: list = []
         
-        for response in api_response.get_data():
+        for response in api_response:
             if search_by.lower() in response["configData"]["id"].lower():
                 if variation == "normal" and not shiny:
                     if "pt" not in response["configData"] and "sh" not in response["configData"]:
@@ -452,11 +454,11 @@ class Rap(APIRequest):
             list | dict: This returns either a dictionary with 1 search result, or a list with dictionaries of all of the matching search results.
         """
         
-        api_response: APIResponse = self.http_get(self.api_url)
+        api_response: APIResponse = self.get_data()
         
         response_list: list = []
         
-        for response in api_response.get_data():
+        for response in api_response:
             if search_by.lower() in response["configData"]["id"].lower():
                 if variation == "normal" and not shiny:
                     if "pt" not in response["configData"] and "sh" not in response["configData"]:
