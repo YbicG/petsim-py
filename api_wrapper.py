@@ -80,7 +80,7 @@ class Collections(APIRequest):
         api_response: APIResponse = self.http_get(self.api_url)
         return api_response.get_status()
     
-# TODO: Add wrappers for each individual collection. Such as Pets, Achievements, etc.
+# TODO: Add wrappers for each individual collection (30+ collections)
 class Collection(APIRequest):
     """
     The details from the specified collection. This contains a list of configuration data from the game configuration files. These are like rows of a database.
@@ -214,6 +214,7 @@ class Clans(APIRequest):
         api_response: APIResponse = self.http_get(self.api_url)
         return api_response.get_status()
 
+# TODO: Add Goals for clans
 class Clan(APIRequest):
     """
     The details of a specific clan.
@@ -275,20 +276,39 @@ class Clan(APIRequest):
             self.Members.append(Member(data=member_data))
            
         for battle_key in api_response["Battles"].keys():
+            
             battle: dict = api_response["Battles"][battle_key]
             
-            battle_data: dict = {
-                "Name": battle_key,
-                "ProcessedAwards": battle["ProcessedAwards"], 
-                "AwardUserIDs": battle["AwardUserIDs"], 
-                "BattleID": battle["BattleID"], 
-                "PointsEarned": battle["Points"], 
-                "PointContributions": battle["PointContributions"],
-                "EarnedMedal": battle["EarnedMedal"] if "EarnedMedal" in battle else None,
-            }
-            
-            self.Battles.append(Battle(data=battle_data))      
+            if "GoalBattle" in battle["BattleID"]:
+                battle_data: dict = {
+                    "Name": battle_key,
+                    "ProcessedAwards": battle["ProcessedAwards"], 
+                    "AwardUserIDs": battle["AwardUserIDs"], 
+                    "Goals": battle["Goals"],
+                    "BattleID": battle["BattleID"], 
+                    "PointsEarned": battle["Points"], 
+                    "PointContributions": battle["PointContributions"],
+                    "EarnedMedal": battle["EarnedMedal"] if "EarnedMedal" in battle else None,
+                }
+                
+                self.Battles.append(Battle(data=battle_data)) 
+    
+            else:
+                battle: dict = api_response["Battles"][battle_key]
+                
+                battle_data: dict = {
+                    "Name": battle_key,
+                    "ProcessedAwards": battle["ProcessedAwards"], 
+                    "AwardUserIDs": battle["AwardUserIDs"], 
+                    "BattleID": battle["BattleID"], 
+                    "PointsEarned": battle["Points"], 
+                    "PointContributions": battle["PointContributions"],
+                    "EarnedMedal": battle["EarnedMedal"] if "EarnedMedal" in battle else None,
+                }
+                
+                self.Battles.append(Battle(data=battle_data))     
         
+        self.CurrentBattle: Battle = self.Battles[-1]
         self.MemberCount: int = len(self.Members)
         self.Points: int = most_recent_clan_battle["Points"]
         
@@ -637,7 +657,7 @@ class ActiveClanBattle(APIRequest):
         return api_response.get_data() 
              
     def get_status(self) -> str:
-        """Retrieves the status of the collection api.
+        """Retrieves the status of the active clan battle api.
 
         Returns:
             str: Current status.
@@ -647,3 +667,5 @@ class ActiveClanBattle(APIRequest):
     
     def __str__(self) -> str:
         return self.Name
+clan = Clan("EXP")
+goals = clan.CurrentBattle.Goals

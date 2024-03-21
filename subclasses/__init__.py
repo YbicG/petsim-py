@@ -48,7 +48,56 @@ class BattleMember():
             "UserID": {self.UserID},
             "Points": {self.Points}
         }}"""
+
+class BattleGoal():
+    Quests: dict = {
+        "27": "Ice Obby Completions",
+        "46": "Catch Fish in Advanced Fishing",
+        "34": "Use Tier 4 Potions",
+        "38": "Break Comets in Best Area",
+        "40": "Make Golden Pets from Best Egg",
+        "44": "Break Lucky Blocks in Best Area",
+        "21": "Break Breakables in Best Area",
+        "39": "Break Mini-Chests in Best Area",
+        "7": "Earn Diamonds",
+        "37": "Break Coin Jars in Best Area",
+        "43": "Break Piñatas in Best Area",
+        "42": "Hatch Rare \"??\" Pets",
+        "9": "Break Diamond Breakables",
+        "41": "Make Rainbow Pets from Best Egg",
+        "20": "Hatch Best Eggs",
+        "12": "Craft Tier 3 Potions",
+        "45": "Find Chests in Advanced Digsite"
+    }
+    
+    def __init__(self, data: dict) -> None:
+        self.Type: str = self.Quests.get(str(data["Type"]))
+        self.TypeID: int = data["Type"]
+        self.Amount: int = data["Amount"]
+        self.Stars: int = data["Stars"]
+        self.Progress: int = data["Progress"]
+        self.Tier: int = data["Tier"]
+        self.Contributions: List[BattleMember] = []
         
+        for contribution_user in data["Contributions"].keys():
+            battle_data: dict = {
+                "UserID": int(contribution_user.replace("u", "")),
+                "Points": data["Contributions"][contribution_user]
+            }
+            
+            self.Contributions.append(BattleMember(data=battle_data))
+        
+        
+    def __str__(self) -> str:
+        return f"""{{
+            "Type": {self.Type}, 
+            "TypeID": {self.TypeID}, 
+            "Amount": {self.Amount}, 
+            "Stars": {self.Stars}, 
+            "Progress": {self.Progress},
+            "Tier": {self.Tier}
+        }}"""
+    
 class Battle():
     def __init__(self, data: dict) -> None:
         self.Name: str = data["Name"]
@@ -57,7 +106,11 @@ class Battle():
         self.BattleID: str = data["BattleID"]
         self.PointsEarned: int = data["PointsEarned"]
         self.EarnedMedal: str = data["EarnedMedal"]
-        
+        self.Goals: List[BattleGoal] | None = None
+        self.Goal1: BattleGoal | None = None
+        self.Goal2: BattleGoal | None = None
+        self.Goal3: BattleGoal | None = None
+        self.Goal4: BattleGoal | None = None
         
         self.PointContributions: List[BattleMember] = []
         
@@ -68,6 +121,15 @@ class Battle():
             }
             
             self.PointContributions.append(BattleMember(data=battle_data))
+        
+        if "GoalBattle" in self.BattleID:
+            self.Goals: List[BattleGoal] = [BattleGoal(goal) for goal in data["Goals"]]
+            self.Goal1: BattleGoal | None = self.Goals[0]
+            self.Goal2: BattleGoal | None = self.Goals[1]
+            self.Goal3: BattleGoal | None = self.Goals[2]
+            self.Goal4: BattleGoal | None = self.Goals[3]
+
+            
             
     def __str__(self) -> str:
         return f"""{{
