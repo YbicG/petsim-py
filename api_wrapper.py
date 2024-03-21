@@ -9,8 +9,6 @@ from subclasses import Sort, SortObject, Member, Battle, PetExist, PetType, PetR
 
 BASE_URL: str = "https://biggamesapi.io/api"
 
-# Wrapper Start
-
 class Collections(APIRequest):
     """
     Types of data from Pet Simulator 99's in-game configuration files. Each of these may be queried. These are like tables of a database.
@@ -200,7 +198,7 @@ class Clans(APIRequest):
         """
         
         if self.get_status() == "ok":
-            api_response: APIResponse = self.http_get(self.api_url)
+            api_response: APIResponse = self.http_get(self.api_url, parameters=self.parameters)
         else:
             print("[API] Network Status: "+self.get_status())
             return None
@@ -649,6 +647,3 @@ class ActiveClanBattle(APIRequest):
     
     def __str__(self) -> str:
         return self.Name
-    
-# End Wrappers
-
