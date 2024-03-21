@@ -13,7 +13,3 @@ def on_click(x, y, button, pressed):
 # Start the click listener
 with Listener(on_click=on_click) as listener:
   listener.join()
-
-chatBar = (2973, 1030)
-message = (2997, 955)
-copyText = (3057, 753)
