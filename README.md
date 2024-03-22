@@ -17,7 +17,7 @@ Example import:
 ```py
 import petsim_py
 
-print(petsim_py.ActiveClanBattle)
+print(petsim_py.ActiveClanBattle())
 ```
 
 ## Classes
