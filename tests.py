@@ -1,6 +1,6 @@
 import unittest
 from api_wrapper import Collections, Collection, Clans, Clan, Exists, Rap, APIRequest, APIResponse
-from subclasses import Sort, SortObject, Member, Battle, PetExist, PetType, PetRap, BattleMember
+from api_wrapper.subclasses import Sort, SortObject, Member, Battle, PetExist, PetType, PetRap, BattleMember
 
 class TestCollections(unittest.TestCase):
     def test_get_data(self):
