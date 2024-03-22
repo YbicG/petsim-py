@@ -1,7 +1,3 @@
-Sure, here's the documentation with markdown formatting:
-
----
-
 # Pet Simulator 99 API Wrapper Documentation
 
 This document provides detailed information about the Pet Simulator 99 API Wrapper and its functionalities.
