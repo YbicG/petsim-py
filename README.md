@@ -14,7 +14,7 @@ pip install petsim-py
 ```
 
 Example import:
-```bash
+```py
 import petsim_py
 
 print(petsim_py.ActiveClanBattle)
