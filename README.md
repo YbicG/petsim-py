@@ -1,4 +1,4 @@
-# Pet Simulator 99 API Wrapper Documentation
+# Pet Simulator 99 API Wrapper
 
 This document provides detailed information about the Pet Simulator 99 API Wrapper and its functionalities.
 
