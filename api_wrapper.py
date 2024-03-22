@@ -667,5 +667,3 @@ class ActiveClanBattle(APIRequest):
     
     def __str__(self) -> str:
         return self.Name
-clan = Clan("EXP")
-goals = clan.CurrentBattle.Goals
