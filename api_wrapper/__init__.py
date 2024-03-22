@@ -4,8 +4,8 @@ import pandas
 from pandas import DataFrame
 from requests import Request
 from typing import List, Dict
-from api import APIRequest, APIResponse
-from subclasses import Sort, SortObject, Member, Battle, PetExist, PetType, PetRap, Rewards
+from .api import APIRequest, APIResponse
+from .subclasses import Sort, SortObject, Member, Battle, PetExist, PetType, PetRap, Rewards
 
 BASE_URL: str = "https://biggamesapi.io/api"
 
