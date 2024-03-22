@@ -214,7 +214,6 @@ class Clans(APIRequest):
         api_response: APIResponse = self.http_get(self.api_url)
         return api_response.get_status()
 
-# TODO: Add Goals for clans
 class Clan(APIRequest):
     """
     The details of a specific clan.
