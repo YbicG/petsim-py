@@ -8,9 +8,16 @@ The Pet Simulator 99 API Wrapper is a Python library that allows you to easily a
 
 ## Installation
 
-You can install this package with
+You can install this package with:
 ```bash
 pip install petsim-py
+```
+
+Example import:
+```bash
+import petsim_py
+
+print(petsim_py.ActiveClanBattle)
 ```
 
 ## Classes
