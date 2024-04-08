@@ -15,9 +15,9 @@ pip install petsim-py
 
 Example import:
 ```py
-import petsim_api
+import petsim.api as api
 
-print(petsim_api.ActiveClanBattle().Name)
+print(api.ActiveClanBattle().Name)
 ```
 
 ## Classes
